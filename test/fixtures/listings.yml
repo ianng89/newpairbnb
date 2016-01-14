@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  occupancy: 1
+  proptype: MyString
+  price: 1
+  details: MyString
+
+two:
+  title: MyString
+  occupancy: 1
+  proptype: MyString
+  price: 1
+  details: MyString

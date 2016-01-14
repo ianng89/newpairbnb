@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'searchkick'
 gem 'clearance'
 gem 'pg'
 gem 'omniauth-facebook'
