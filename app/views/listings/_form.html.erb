@@ -31,6 +31,10 @@
     <%= f.label :details %><br>
     <%= f.text_field :details %>
   </div>
+    <div class="field">
+    <%= f.label :picture %><br>
+    <%= f.file_field :picture, multiple: true%>
+  </div>
   <div class="actions">
     <%= f.submit %>
   </div>

@@ -30,6 +30,13 @@
   <%= @listing.user_id %>
 </p>
 
+<p>
+  <strong>Image:</strong>
+<% @listing.picture.each do |x| %>
+<a href="<%=x.url%>"><%= image_tag x.thumb.url %></a>
+<% end %>
+</p>
+
 <%= render 'bookings/form' %>
 
 <%= link_to 'Edit', edit_listing_path(@listing) %> |
