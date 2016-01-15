@@ -8,7 +8,7 @@ class ListingsController < ApplicationController
   end
 
   def search
-    @listings = Listing.search params[:search]
+    @listings = Listing.search params[:search], match: :word_start
   end
   # GET /listings/1
   # GET /listings/1.json

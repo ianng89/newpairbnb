@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :bookings
   resources :listings
   resources :users
   root 'users#index'

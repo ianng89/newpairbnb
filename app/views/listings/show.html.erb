@@ -30,5 +30,7 @@
   <%= @listing.user_id %>
 </p>
 
+<%= render 'bookings/form' %>
+
 <%= link_to 'Edit', edit_listing_path(@listing) %> |
 <%= link_to 'Back', listings_path %>
