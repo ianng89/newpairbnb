@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :bookings
   resources :listings
   resources :users
+  resources :pictures
   root 'users#index'
   get 'auth/:provider/callback', to: 'sessions#create'
   get 'auth/failure', to: redirect('/')
@@ -9,6 +10,7 @@ Rails.application.routes.draw do
 
   resource :home, only: [:show]
   get '/search' => 'listings#search'
+  get '/preload', to: 'bookings#preload'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

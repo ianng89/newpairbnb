@@ -14,11 +14,57 @@
 
   <div class="field">
     <%= f.label :startdate %><br>
-    <%= f.date_select :startdate %>
-  </div>
+    <%= f.text_field :startdate %>
+
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script>
+ function unavailable(date){
+  dmy = date.getDate() + "-" + (date.getMonth()+1) + "-" + date.getFullYear();
+  return[$.inArray(dmy,unavailableDates)==-1];
+ }
+
+ $(function() {
+    unavailableDates = [];
+   $.ajax({
+    url: '/preload',
+    data: {'listing_id': <%= @listing.id %>},
+    dataType: 'json',
+    success: function(data) {
+
+     $.each(data, function(arrID, arrValue) {
+        for(var d = new Date(arrValue.startdate); d <= new Date(arrValue.enddate); d.setDate(d.getDate() + 1)) {
+          unavailableDates.push($.datepicker.formatDate('d-m-yy', d));
+        }
+      });
+
+   $('#booking_startdate').datepicker({
+     dateFormat: 'dd-mm-yy',
+     minDate: 0,
+     beforeShowDay: unavailable,
+     onSelect:function(selected){
+       $('#booking_enddate').datepicker("option", "minDate", selected);
+     }
+   });
+
+   $('#booking_enddate').datepicker({
+     dateFormat: 'dd-mm-yy',
+     minDate: 0,
+    beforeShowDay: unavailable,
+     onSelect:function(selected){
+       $('#booking_startdate').datepicker("option", "maxDate", selected);
+     }
+   });
+ }
+ });
+ });
+
+</script>
+ </div>
+
   <div class="field">
     <%= f.label :enddate %><br>
-    <%= f.date_select :enddate %>
+    <%= f.text_field :enddate %>
   </div>
   <div class="field">
     <%= f.label :price %><br>
@@ -28,6 +74,7 @@
     <%= f.label :duration %><br>
     <%= f.number_field :duration %>
   </div>
+
   <div class="actions">
 
   <%= f.hidden_field :listing_id, value: @listing.id %>

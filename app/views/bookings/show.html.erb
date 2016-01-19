@@ -7,7 +7,7 @@
 
 <p>
   <strong>Listing:</strong>
-  <%= @booking.listing_id %>
+  <%= link_to @booking.listing.title , listing_path(@booking.listing.id) %>
 </p>
 
 <p>
