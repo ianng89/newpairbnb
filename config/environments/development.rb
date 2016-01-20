@@ -4,8 +4,8 @@ config.action_mailer.smtp_settings = {
   address:              'smtp.gmail.com',
   port:                 587,
   domain:               'example.com',
-  user_name:            'next.ian.test',
-  password:             'nextacademy123',
+  user_name:            ENV['EMAIL_USER'],
+  password:             ENV['EMAIL_PW'],
   authentication:       'plain',
   enable_starttls_auto: true  }
   # Settings specified here will take precedence over those in config/application.rb.
