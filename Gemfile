@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+gem 'mail'
 gem 'jquery-ui-rails'
 gem 'searchkick'
 gem 'clearance'

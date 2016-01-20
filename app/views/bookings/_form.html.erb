@@ -18,41 +18,102 @@
 
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    
     <script>
- function unavailable(date){
-  dmy = date.getDate() + "-" + (date.getMonth()+1) + "-" + date.getFullYear();
-  return[$.inArray(dmy,unavailableDates)==-1];
- }
+  function unavailable(date){
+    dmy = date.getDate() + "-" + (date.getMonth()+1) + "-" + date.getFullYear();
+    return[$.inArray(dmy,unavailableDates)==-1];
+  }
 
  $(function() {
     unavailableDates = [];
-   $.ajax({
-    url: '/preload',
-    data: {'listing_id': <%= @listing.id %>},
-    dataType: 'json',
-    success: function(data) {
+    $.ajax({
+      url: '/preload',
+      data: {'listing_id': <%= @listing.id %>},
+      dataType: 'json',
+      success: function(data) {
 
-     $.each(data, function(arrID, arrValue) {
+      $.each(data, function(arrID, arrValue) {
         for(var d = new Date(arrValue.startdate); d <= new Date(arrValue.enddate); d.setDate(d.getDate() + 1)) {
-          unavailableDates.push($.datepicker.formatDate('d-m-yy', d));
+            unavailableDates.push($.datepicker.formatDate('d-m-yy', d));
+          }
+      });
+
+  $('#booking_startdate').datepicker({
+    dateFormat: 'dd-mm-yy',
+    minDate: 0,
+    beforeShowDay: unavailable,
+    onSelect:function(selected){
+      $('#booking_enddate').datepicker("option", "minDate", selected);
+
+
+      var start_date = $(this).datepicker('getDate');
+      var end_date = $('#booking_enddate').datepicker('getDate');
+      var days = (end_date - start_date)/1000/60/60/24 + 1;
+      var input = {
+        'start_date': start_date,
+        'end_date': end_date,
+        'listing_id': <%= @listing.id %>
+      }
+          
+
+      $.ajax({
+        url: "/preview",
+        data: input,
+        success: function(data) {
+          
+          if (data.conflict) {
+            $('#message').text("This date range isn't available");
+            $('#preview').hide();
+          } else {
+            $('#preview').show();
+            var total = days * <%= @listing.price %>
+            $('input#booking_duration').val(days);
+            $('#reservation_sum').text(total);
+            $('input#booking_price').val(total);   
+          }   
+        
+        }
+      
+      });
+    }
+  });
+
+      $('#booking_enddate').datepicker({
+         dateFormat: 'dd-mm-yy',
+         minDate: 0,
+        beforeShowDay: unavailable,
+        onSelect:function(selected){
+          $('#booking_startdate').datepicker("option", "maxDate", selected);
+          var end_date = $(this).datepicker('getDate');
+          var start_date = $('#booking_startdate').datepicker('getDate');
+          var days = (end_date - start_date)/1000/60/60/24 + 1;
+
+          var input = {
+            'start_date': start_date,
+            'end_date': end_date,
+            'listing_id': <%= @listing.id %>
+          }
+           
+
+      $.ajax({
+        url: "/preview",
+        data: input,
+        success: function(data) {
+
+          if (data.conflict) {
+           $('#message').text("This date range isn't available");
+           $('#preview').hide();
+          }else {
+           $('#preview').show();
+           var total = days * <%= @listing.price %>
+           $('input#booking_duration').val(days);
+           $('#reservation_sum').text(total);
+           $('input#booking_price').val(total);   
+          }   
         }
       });
 
-   $('#booking_startdate').datepicker({
-     dateFormat: 'dd-mm-yy',
-     minDate: 0,
-     beforeShowDay: unavailable,
-     onSelect:function(selected){
-       $('#booking_enddate').datepicker("option", "minDate", selected);
-     }
-   });
-
-   $('#booking_enddate').datepicker({
-     dateFormat: 'dd-mm-yy',
-     minDate: 0,
-    beforeShowDay: unavailable,
-     onSelect:function(selected){
-       $('#booking_startdate').datepicker("option", "maxDate", selected);
      }
    });
  }

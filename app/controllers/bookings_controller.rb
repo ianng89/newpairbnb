@@ -68,6 +68,17 @@ class BookingsController < ApplicationController
     render json: reserved
   end
 
+  def preview
+    start_date = Date.parse(params[:start_date])
+    end_date = Date.parse(params[:end_date])
+
+    output = {
+      conflict: is_conflict(start_date, end_date)
+    }
+
+    render json: output
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_booking
@@ -77,5 +88,11 @@ class BookingsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def booking_params
       params.require(:booking).permit(:user_id, :listing_id, :startdate, :enddate, :price, :duration)
+    end
+
+    def is_conflict(start_date, end_date)
+      listing = Listing.find(params[:listing_id])
+      check = listing.bookings.where("? < startdate AND enddate < ?", start_date, end_date)
+      check.size > 0? true: false
     end
 end
